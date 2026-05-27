@@ -1,0 +1,54 @@
+public class Solution {
+    public bool IsValidSudoku(char[][] board) {
+        // box:
+		// 	0, 0: 1, 2, 3 ...
+		// 	0, 1: 1, 2, 3 ...
+		
+		// horizontal
+		// vertical
+		
+		var box = new Dictionary<ValueTuple<int, int>, HashSet<char>>();
+		var hor = new Dictionary<int, HashSet<char>>();
+		var vert = new Dictionary<int, HashSet<char>>();
+		
+		for (int i = 0; i < board.Length; i++) {
+			for (int j = 0; j < board[0].Length; j++) {
+				if (board[i][j] == '.') {
+					continue;
+				}
+	
+				// First time encountering key
+				InitializeKey(box, (i / 3, j / 3));
+				InitializeKey(hor, i);
+				InitializeKey(vert, j);
+				
+				if (!hor.ContainsKey(i)) {
+					hor[i] = new HashSet<char>();
+				}
+				
+				if (!vert.ContainsKey(j)) {
+					vert[j] = new HashSet<char>();
+				}
+			
+				// Check if HashSets contains duplicates
+				if (box[(i / 3, j / 3)].Contains(board[i][j]) ||
+					hor[i].Contains(board[i][j]) ||
+					vert[j].Contains(board[i][j])
+				) {
+					return false;
+				}
+				
+				box[(i / 3, j / 3)].Add(board[i][j]);
+				hor[i].Add(board[i][j]);
+				vert[j].Add(board[i][j]);
+			}
+		}
+		return true;
+    }
+	
+	public void InitializeKey<T>(Dictionary<T, HashSet<char>> dict, T key) {
+		if (!dict.ContainsKey(key)) {
+			dict[key] = new HashSet<char>();
+		}
+	}
+}
